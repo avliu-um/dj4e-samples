@@ -5,3 +5,4 @@ __pycache__
 github_settings.py
 *.pyc
 web_dev_env/
+.idea/

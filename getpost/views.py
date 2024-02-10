@@ -38,6 +38,19 @@ def postform(request):
     response += dumpdata('POST', request.POST)
     return HttpResponse(response)
 
+
+@csrf_exempt
+def ev(request):
+
+    # first arriving at this page
+    if not request.POST:
+        return render(request, 'getpost/ev_intake_form.html')
+    else:
+        # run lambda based off request.POST data
+        dump = dumpdata('POST', request.POST)
+        return render(request, 'getpost/ev_thank_you.html', {'data' : dump })
+
+
 @csrf_exempt
 def html4(request):
     dump = dumpdata('POST', request.POST)

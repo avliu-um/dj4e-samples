@@ -14,4 +14,7 @@ urlpatterns = [
     path('classy', views.ClassyView.as_view(), name='classy'),
     path('bounce', views.bounce, name='bounce'),
     path('awesome', views.AwesomeView.as_view(), name='awesome'),
+
+    path('ev', views.ev, name='ev'),
+
 ]
