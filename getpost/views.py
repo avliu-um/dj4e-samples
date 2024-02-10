@@ -4,6 +4,9 @@ import html
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 
+import boto3
+import json
+
 # Call as dumpdata('GET', request.GET)
 
 def dumpdata(place, data) :
@@ -39,14 +42,36 @@ def postform(request):
     return HttpResponse(response)
 
 
+def send_email(recipient, body):
+    print(f'sending email to {recipient} with : {body}')
+    lambda_client = boto3.client('lambda')
+
+    payload = {
+        'recipient': recipient,
+        'body': body
+    }
+
+    lambda_name = 'messenger'
+    response = lambda_client.invoke(
+        FunctionName=lambda_name,
+        InvocationType='RequestResponse',
+        Payload=json.dumps(payload),
+        LogType="Tail"
+    )
+    print(f'lambda response: {response}')
+
 @csrf_exempt
 def ev(request):
-
     # first arriving at this page
     if not request.POST:
         return render(request, 'getpost/ev_intake_form.html')
+
+    # form submitted
     else:
-        # run lambda based off request.POST data
+        recipient = request.POST['recipient']
+        body = request.POST['body']
+        send_email(recipient, body)
+
         dump = dumpdata('POST', request.POST)
         return render(request, 'getpost/ev_thank_you.html', {'data' : dump })
 
@@ -140,3 +165,8 @@ class AwesomeView(View) :
 # https://stackoverflow.com/questions/3289860/how-can-i-embed-django-csrf-token-straight-into-html
 
 # https://stackoverflow.com/questions/36347512/how-can-i-get-csrftoken-in-view
+
+if __name__ == '__main__':
+    recipient = 'avliu@umich.edu'
+    body = 'test from dj4e project folder'
+    send_email(recipient, body)
