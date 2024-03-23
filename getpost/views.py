@@ -42,16 +42,10 @@ def postform(request):
     return HttpResponse(response)
 
 
-def send_email(recipient, body):
-    print(f'sending email to {recipient} with : {body}')
+def invoke_lambda(lambda_name, payload):
     lambda_client = boto3.client('lambda')
-
-    payload = {
-        'recipient': recipient,
-        'body': body
-    }
-
-    lambda_name = 'messenger'
+    print(f'lambda name: {lambda_name}')
+    print(f'payload: {payload}')
     response = lambda_client.invoke(
         FunctionName=lambda_name,
         InvocationType='RequestResponse',
@@ -65,14 +59,32 @@ def ev(request):
     # first arriving at this page
     if not request.POST:
         return render(request, 'getpost/ev_intake_form.html')
-
+    
     # form submitted
     else:
         recipient = request.POST['recipient']
-        body = request.POST['body']
-        send_email(recipient, body)
+        begin_date = request.POST['begin_date']
+        end_date = request.POST['end_date']
+        uniqueness_inside = request.POST['uniqueness_inside']
+        uniqueness_outside = request.POST['uniqueness_outside']
 
+        # TODO: Validate the values (date within range)
+
+        # invoke the job
+        # create the payload
+        payload = {
+            'recipient': recipient, 
+            'begin_date': begin_date, 
+            'end_date': end_date, 
+            'uniqueness_inside': uniqueness_inside, 
+            'uniqueness_outside': uniqueness_outside, 
+        }
+        lambda_name = 'dataset_generator'
+        invoke_lambda(lambda_name=lambda_name, payload=payload)
+
+        # debugging
         dump = dumpdata('POST', request.POST)
+
         return render(request, 'getpost/ev_thank_you.html', {'data' : dump })
 
 

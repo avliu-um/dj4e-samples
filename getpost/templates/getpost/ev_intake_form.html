@@ -1,17 +1,22 @@
 
 <form method="post">
     <p>
-    <p> ev intake form </p>
+    <p> ev dataset generation intake form </p>
 
     E-mail: <input type="email" name="recipient"><br/>
-    Body: <input type="text" name="body" size="40"/></p>
 
+    Begin date: <input type="date" name="begin_date" value="2024-01-01"><br/>
+    End date: <input type="date" name="end_date" value="2024-01-01"><br/>
 
-    Select your favorite color: <input type="color" name="favcolor" value="#0000ff"><br/>
-    Birthday: <input type="date" name="bday" value="2003-09-02"><br/>
-    Quantity (between 1 and 5): <input type="number" name="quantity" min="1" max="5"><br/>
-    Add your homepage: <input type="url" name="homepage"><br>
-    Transportation: <input type="flying" name="saucer"><br>
+    <p>Uniqueness inside dataset:<br/>
+        <input type="radio" name="uniqueness_inside" value="postid">Post ID<br>
+        <input type="radio" name="uniqueness_inside" value="searchzip_postid" checked>Search zip code and Post ID
+    </p>
+
+    <p>Uniqueness outside dataset:<br/>
+        <input type="radio" name="uniqueness_outside" value="new">New<br>
+        <input type="radio" name="uniqueness_outside" value="all" checked>All
+    </p>
 
    <input type="submit" name="dopost" value="Submit"/>
    <input type="button" 
